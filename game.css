@@ -27,7 +27,8 @@ body {
 	--color-line: #ab9c77;
 	--color-message: #eb5b4a;
 	--color-bg-scorescreen: #0e0e35;
-	--gradient: linear-gradient(#101232, #101560);
+	/*--gradient: linear-gradient(#101232, #101560);*/
+	--gradient: linear-gradient(#e4e0ba, #f7d9aa);
 	color: var(--color-text);
 	background-color: var(--color-bg);
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
