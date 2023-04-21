@@ -377,10 +377,9 @@ class Airplane {
   }
 
   tick(deltaTime) {
-    this.propeller.rotation.x += 0.2 + game.planeSpeed * deltaTime * .005
+    this.propeller.rotation.x += 0.2 + deltaTime * .005
 
     if (game.status === 'playing') {
-      game.planeSpeed = utils.normalize(ui.mousePos.x, -0.5, 0.5, world.planeMinSpeed, world.planeMaxSpeed)
       let targetX = utils.normalize(ui.mousePos.x, -1, 1, -world.planeAmpWidth * 0.7, -world.planeAmpWidth)
       let targetY = utils.normalize(ui.mousePos.y, -0.75, 0.75, world.planeDefaultHeight - world.planeAmpHeight, world.planeDefaultHeight + world.planeAmpHeight)
 
@@ -647,7 +646,7 @@ class Cloud {
     }
   }
 
-  tick(deltaTime) {
+  tick(_deltaTime) {
     const l = this.mesh.children.length
     for (let i = 0; i < l; i++) {
       let m = this.mesh.children[i]
@@ -887,7 +886,7 @@ function spawnDoubleGunCollectible() {
 }
 
 function spawnLifeCollectible() {
-  const heart = modelManager.get('heart')
+  const heart = modelManager.get('heart').clone()
   heart.traverse(function (child) {
     if (child instanceof THREE.Mesh) {
       child.material.color.setHex(0xFF0000)
@@ -1339,7 +1338,7 @@ function createLights() {
   scene.add(ambientLight)
 }
 
-function rotateAroundSea(object, deltaTime, speed) {
+function rotateAroundSea(object, deltaTime, _speed) {
   object.angle += deltaTime * game.speed * world.collectiblesSpeed
   if (object.angle > Math.PI * 2) {
     object.angle -= Math.PI * 2
@@ -1392,7 +1391,7 @@ class UI {
     this._resizeListeners.push(callback)
   }
 
-  handleWindowResize(event) {
+  handleWindowResize(_event) {
     this.width = window.innerWidth
     this.height = window.innerHeight
 
@@ -1447,7 +1446,7 @@ class UI {
     this.mouseButtons[event.button] = false
     event.preventDefault()
 
-    if (game && game.status == "waitingReplay") {
+    if (game && game.status === "waitingReplay") {
       resetMap()
       ui.informNextLevel(1)
       game.paused = false
@@ -1463,7 +1462,7 @@ class UI {
     }
   }
 
-  handleBlur(event) {
+  handleBlur(_event) {
     this.mouseButtons = [false, false, false]
   }
 
@@ -1706,22 +1705,22 @@ function loop() {
   const deltaTime = newTime - oldTime
   oldTime = newTime
 
-  if (game.status == 'playing') {
+  if (game.status === 'playing') {
     if (!game.paused) {
       // Add coins
-      if (Math.floor(game.distance) % world.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
+      if (Math.floor(game.distance) % world.distanceForCoinsSpawn === 0 && Math.floor(game.distance) > game.coinLastSpawn) {
         game.coinLastSpawn = Math.floor(game.distance);
         spawnCoins()
       }
-      if (Math.floor(game.distance) % world.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
+      if (Math.floor(game.distance) % world.distanceForSpeedUpdate === 0 && Math.floor(game.distance) > game.speedLastUpdate) {
         game.speedLastUpdate = Math.floor(game.distance);
-        game.targetBaseSpeed += world.incrementSpeedByTime * deltaTime;
+        game.targetSpeed += world.incrementSpeedByTime * deltaTime;
       }
-      if (Math.floor(game.distance) % world.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
+      if (Math.floor(game.distance) % world.distanceForEnemiesSpawn === 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
         game.enemyLastSpawn = Math.floor(game.distance)
         spawnEnemies(game.level)
       }
-      if (Math.floor(game.distance) % world.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
+      if (Math.floor(game.distance) % world.distanceForLevelUpdate === 0 && Math.floor(game.distance) > game.levelLastUpdate) {
         game.levelLastUpdate = Math.floor(game.distance)
         game.level += 1
         if (game.level === world.levelCount) {
@@ -1733,7 +1732,7 @@ function loop() {
           sea.updateColor()
           sea2.updateColor()
           ui.updateLevelCount()
-          game.targetBaseSpeed = world.initSpeed + world.incrementSpeedByLevel * game.level
+          game.targetSpeed = world.initSpeed + world.incrementSpeedByLevel * game.level
         }
       }
 
@@ -1761,15 +1760,14 @@ function loop() {
 
       airplane.tick(deltaTime)
       game.distance += game.speed * deltaTime * world.ratioSpeedDistance
-      game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02
-      game.speed = game.baseSpeed * game.planeSpeed
+      game.speed += (game.targetSpeed - game.speed) * deltaTime * 0.02
       ui.updateDistanceDisplay()
 
       if (game.lifes <= 0 && canDie) {
         game.status = "gameover"
       }
     }
-  } else if (game.status == "gameover") {
+  } else if (game.status === "gameover") {
     game.speed *= .99
     airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime
     airplane.mesh.rotation.x += 0.0003 * deltaTime
@@ -1781,7 +1779,7 @@ function loop() {
       game.status = "waitingReplay"
       audioManager.play('water-splash')
     }
-  } else if (game.status == "waitingReplay") {
+  } else if (game.status === "waitingReplay") {
     // nothing to do
   }
 
@@ -1808,10 +1806,9 @@ function resetMap() {
   game = {
     status: 'playing',
 
-    speed: 0,
     paused: false,
-    baseSpeed: 0.00035,
-    targetBaseSpeed: 0.00035,
+    speed: 0,
+    targetSpeed: 0.00035,
     speedLastUpdate: 0,
 
     distance: 0,
@@ -1831,7 +1828,6 @@ function resetMap() {
     levelLastUpdate: 0,
 
     planeFallSpeed: 0.001,
-    planeSpeed: 0,
     planeCollisionDisplacementX: 0,
     planeCollisionSpeedX: 0,
     planeCollisionDisplacementY: 0,
@@ -1886,7 +1882,7 @@ function startMap() {
   game.paused = false
 }
 
-function onWebsiteLoaded(event) {
+function onWebsiteLoaded(_event) {
   // load audio
   audioManager.load('ocean', null, '/audio/ocean.mp3')
   audioManager.load('propeller', null, '/audio/propeller.mp3')
