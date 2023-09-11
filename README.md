@@ -1,24 +1,21 @@
-# The Aviator 2
+# The Aviator 3
 
-Updated version of Kaim Maaloul's The Aviator, see his [Article on Codrops](http://tympanus.net/codrops/?p=26501), demo [Demo](http://tympanus.net/Tutorials/TheAviator/) and [GitHub](https://github.com/yakudoo/TheAviator).
+Updated version of Kaim Maaloul's The Aviator and Badestrand's The Aviator 2, see his [Article on Codrops](http://tympanus.net/codrops/?p=26501), demo [Demo](http://tympanus.net/Tutorials/TheAviator/) and [GitHub](https://github.com/yakudoo/TheAviator).
 
-![The Aviator 2](https://tympanus.net/codrops/wp-content/uploads/2022/04/Aviator2_featured.jpg)
+![The Aviator 3](https://raw.githubusercontent.com/BrainP4in/TheAviator3/master/img/screenshot.png)
 
-[Article on Codrops](https://tympanus.net/codrops/?p=63296)
 
-[Demo](https://tympanus.net/Tutorials/TheAviator2)
-
-This repository is the archive of the source code for the Codrops article and will not get updated.
+This repository is the archive of the source code will not get updated.
 
 
 ## Start
 
-Clone repository, in the code directory run `php -S localhost:8123` and in your browser visit [http://localhost:8123/](http://localhost:8123/).
+Clone repository, in the code directory run `npm i && npm start` and in your browser visit [http://localhost:8123/](http://localhost:8123/).
 
 
 ## License
 
-Integrate or build upon it for free in your personal or commercial projects. Don't republish, redistribute or sell "as-is". 
+Integrate or build upon it for free in your personal or commercial projects. Don't republish, redistribute or sell "as-is".
 
 
 
@@ -46,54 +43,3 @@ From freesound:
  - Sound "Pistol Shot" by user "LeMudCrab" (https://freesound.org/people/LeMudCrab/sounds/163456/) licensed under Creative Commons 0
  - Sound "Water Splash" by user "Yin_Yang_Jake007" (https://freesound.org/people/Yin_Yang_Jake007/sounds/406087/) licensed under Attribution 3.0
  - Sound "Coins - 01" by user "DWOBoyle" (https://freesound.org/people/DWOBoyle/sounds/140382/) licensed under Attribution 3.0
-
-
-## Misc
-
-Follow Michel: [Twitter](https://twitter.com/MichelOliverH)
-
-Follow Karim: [Twitter](https://twitter.com/yakudoo), [Codepen](http://codepen.io/Yakudoo/)
-
-
-## Updates over the original
-
-**07 April 2022**
- - when replaying, remove all coins and enemies
- - fix bug about the state handling after dying
- - implement all audio
- - find audio files
-      - propeller/airplane sound
-      - shooting simple, double, better
-      - background music
-      - picking up collectible
-      - collision with enemy
-      - collecting a coin
-
-**06 April 2022**
- - airplane recoil
- - make end screen after 5 levels
- - make collectibles logic
-      - life: if life<3 and a small chance
-      - simple gun: level 2
-      - double gun: level 3
-      - better gun: level 4
-
-**05 April 2022**
- - fix bug that no more enemies are spawning
- - transfer to new three.js version
- - design collectibles
-      - simple gun
-      - better gun
-      - double gun
-      - life
- - complete simple gun, better gun and double gun
-
-**04 April 2022**
- - design airplane's machine gun
- - redesign coins
- - each level has a different sea color
- - remove energy bar
- - show hearts as remaining hitpoints
- - show new level entry prominently
- - be able to shoot
- - copy initial game
