@@ -1,5 +1,11 @@
-import {Color, Mesh, MeshPhongMaterial, Scene, TetrahedronGeometry} from 'three';
-import {Power2, gsap} from 'gsap';
+import {
+  Color,
+  Mesh,
+  MeshPhongMaterial,
+  Scene,
+  TetrahedronGeometry,
+} from "three";
+import { Power2, gsap } from "gsap";
 
 export function randomOneOf(choices: Array<unknown>) {
   return choices[Math.floor(Math.random() * choices.length)];
@@ -30,13 +36,26 @@ export function makeTetrahedron(a, b, c, d) {
 
 export function rotateAroundSea(object, deltaTime, _speed) {
   object.angle +=
-    deltaTime * object.game.state.speed * object.game.world.worldSettings.collectiblesSpeed;
+    deltaTime *
+    object.game.state.speed *
+    object.game.world.worldSettings.collectiblesSpeed;
   if (object.angle > Math.PI * 2) {
     object.angle -= Math.PI * 2;
   }
   object.mesh.position.x = Math.cos(object.angle) * object.distance;
   object.mesh.position.y =
-    -object.game.world.worldSettings.seaRadius + Math.sin(object.angle) * object.distance;
+    -object.game.world.worldSettings.seaRadius +
+    Math.sin(object.angle) * object.distance;
+}
+
+export function collide(mesh1, mesh2, tolerance) {
+  const diffPos = mesh1.position.clone().sub(mesh2.position.clone());
+  const d = diffPos.length();
+  return d < tolerance;
+}
+
+export function randomFromRange(min, max) {
+  return min + Math.random() * (max - min);
 }
 
 export function spawnParticles(pos, count, color, scale, scene: Scene) {
@@ -61,9 +80,13 @@ export function spawnParticles(pos, count, color, scale, scene: Scene) {
     const targetZ = pos.z + (-1 + Math.random() * 2) * 50;
     const speed = 0.6 + Math.random() * 0.2;
     // TweenMax.to(mesh.rotation, speed, {x: Math.random() * 12, y: Math.random() * 12});
-    gsap.to(mesh.rotation, {duration: speed, x: Math.random() * 12, y: Math.random() * 12});
+    gsap.to(mesh.rotation, {
+      duration: speed,
+      x: Math.random() * 12,
+      y: Math.random() * 12,
+    });
     // TweenMax.to(mesh.scale, speed, {x: 0.1, y: 0.1, z: 0.1});
-    gsap.to(mesh.scale, {duration: speed, x: 0.1, y: 0.1, z: 0.1});
+    gsap.to(mesh.scale, { duration: speed, x: 0.1, y: 0.1, z: 0.1 });
     // TweenMax.to(mesh.position, speed, {
     //   x: targetX,
     //   y: targetY,

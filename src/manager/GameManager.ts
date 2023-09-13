@@ -1,7 +1,8 @@
-import {Game} from '../game';
-import {DEFAULT_STATE, WORLD_DEFAULT_SETTINGS, canDie} from '../settings';
-import {GameStatus} from '../types';
-import {spawnEnemies} from '../world/enemy/Enemy';
+import { Game } from "../game";
+import { DEFAULT_STATE, WORLD_DEFAULT_SETTINGS, canDie } from "../settings";
+import { GameStatus } from "../types";
+import { spawnEnemies } from "../world/enemy/Enemy";
+import { spawnCoins } from "../world/collectables/Coin";
 
 export class GameManager {
   private soundPlaying = false;
@@ -10,8 +11,8 @@ export class GameManager {
 
   public startMap() {
     if (!this.soundPlaying) {
-      this.game.audioManager.play('propeller', {loop: true, volume: 1});
-      this.game.audioManager.play('ocean', {loop: true, volume: 1});
+      this.game.audioManager.play("propeller", { loop: true, volume: 1 });
+      this.game.audioManager.play("ocean", { loop: true, volume: 1 });
       this.soundPlaying = true;
     }
 
@@ -32,20 +33,24 @@ export class GameManager {
     if (this.game.state.status === GameStatus.Playing) {
       if (!this.game.state.paused) {
         // Add coins
-        // if (
-        //   Math.floor(this.game.state.distance) % this.game.world.worldSettings.distanceForCoinsSpawn === 0 &&
-        //   Math.floor(this.game.state.distance) > this.game.state.coinLastSpawn
-        // ) {
-        //   this.game.state.coinLastSpawn = Math.floor(this.game.state.distance);
-        //   spawnCoins();
-        // }
+        if (
+          Math.floor(this.game.state.distance) %
+            this.game.world.worldSettings.distanceForCoinsSpawn ===
+            0 &&
+          Math.floor(this.game.state.distance) > this.game.state.coinLastSpawn
+        ) {
+          this.game.state.coinLastSpawn = Math.floor(this.game.state.distance);
+          spawnCoins(this.game);
+        }
         if (
           Math.floor(this.game.state.distance) %
             this.game.world.worldSettings.distanceForSpeedUpdate ===
             0 &&
           Math.floor(this.game.state.distance) > this.game.state.speedLastUpdate
         ) {
-          this.game.state.speedLastUpdate = Math.floor(this.game.state.distance);
+          this.game.state.speedLastUpdate = Math.floor(
+            this.game.state.distance,
+          );
           this.game.state.targetSpeed +=
             this.game.world.worldSettings.incrementSpeedByTime * deltaTime;
         }
@@ -64,9 +69,13 @@ export class GameManager {
             0 &&
           Math.floor(this.game.state.distance) > this.game.state.levelLastUpdate
         ) {
-          this.game.state.levelLastUpdate = Math.floor(this.game.state.distance);
+          this.game.state.levelLastUpdate = Math.floor(
+            this.game.state.distance,
+          );
           this.game.state.level += 1;
-          if (this.game.state.level === this.game.world.worldSettings.levelCount) {
+          if (
+            this.game.state.level === this.game.world.worldSettings.levelCount
+          ) {
             this.game.state.status = GameStatus.Finished;
             this.game.world.setFollowView();
             this.game.uiManager.showScoreScreen();
@@ -77,7 +86,8 @@ export class GameManager {
             this.game.uiManager.updateLevelCount();
             this.game.state.targetSpeed =
               this.game.world.worldSettings.initSpeed +
-              this.game.world.worldSettings.incrementSpeedByLevel * this.game.state.level;
+              this.game.world.worldSettings.incrementSpeedByLevel *
+                this.game.state.level;
           }
         }
 
@@ -118,9 +128,13 @@ export class GameManager {
 
         this.game.world.airplane.tick(deltaTime);
         this.game.state.distance +=
-          this.game.state.speed * deltaTime * this.game.world.worldSettings.ratioSpeedDistance;
+          this.game.state.speed *
+          deltaTime *
+          this.game.world.worldSettings.ratioSpeedDistance;
         this.game.state.speed +=
-          (this.game.state.targetSpeed - this.game.state.speed) * deltaTime * 0.02;
+          (this.game.state.targetSpeed - this.game.state.speed) *
+          deltaTime *
+          0.02;
         this.game.uiManager.updateDistanceDisplay();
 
         if (this.game.state.lifes <= 0 && canDie) {
@@ -130,15 +144,16 @@ export class GameManager {
     } else if (this.game.state.status === GameStatus.GameOver) {
       this.game.state.speed *= 0.99;
 
-      const {airplane} = this.game.world;
-      airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime;
+      const { airplane } = this.game.world;
+      airplane.mesh.rotation.z +=
+        (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime;
       airplane.mesh.rotation.x += 0.0003 * deltaTime;
       this.game.state.planeFallSpeed *= 1.05;
       airplane.mesh.position.y -= this.game.state.planeFallSpeed * deltaTime;
       if (airplane.mesh.position.y < -200) {
         this.game.uiManager.showReplay();
         this.game.state.status = GameStatus.WaitingReplay;
-        this.game.audioManager.play('water-splash');
+        this.game.audioManager.play("water-splash");
       }
     } else if (this.game.state.status === GameStatus.WaitingReplay) {
       // nothing to do
@@ -151,20 +166,24 @@ export class GameManager {
       if (this.game.world.sea.mesh.rotation.z > 2 * Math.PI) {
         this.game.world.sea.mesh.rotation.z -= 2 * Math.PI;
       }
-      const {ambientLight} = this.game.world.light;
-      ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
+      const { ambientLight } = this.game.world.light;
+      ambientLight.intensity +=
+        (0.5 - ambientLight.intensity) * deltaTime * 0.005;
 
       this.game.sceneManager.tick(deltaTime);
       this.game.world.sky.tick(deltaTime);
       this.game.world.sea.tick(deltaTime);
     }
 
-    this.game.world.renderer.render(this.game.world.scene, this.game.world.camera);
+    this.game.world.renderer.render(
+      this.game.world.scene,
+      this.game.world.camera,
+    );
     requestAnimationFrame(() => this.loop());
   }
 
   public resetMap() {
-    this.game.state = {...DEFAULT_STATE};
+    this.game.state = { ...DEFAULT_STATE };
 
     // update ui
     this.game.uiManager.updateDistanceDisplay();
