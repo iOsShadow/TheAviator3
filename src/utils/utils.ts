@@ -79,24 +79,12 @@ export function spawnParticles(pos, count, color, scale, scene: Scene) {
     const targetY = pos.y + (-1 + Math.random() * 2) * 50;
     const targetZ = pos.z + (-1 + Math.random() * 2) * 50;
     const speed = 0.6 + Math.random() * 0.2;
-    // TweenMax.to(mesh.rotation, speed, {x: Math.random() * 12, y: Math.random() * 12});
     gsap.to(mesh.rotation, {
       duration: speed,
       x: Math.random() * 12,
       y: Math.random() * 12,
     });
-    // TweenMax.to(mesh.scale, speed, {x: 0.1, y: 0.1, z: 0.1});
     gsap.to(mesh.scale, { duration: speed, x: 0.1, y: 0.1, z: 0.1 });
-    // TweenMax.to(mesh.position, speed, {
-    //   x: targetX,
-    //   y: targetY,
-    //   z: targetZ,
-    //   delay: Math.random() * 0.1,
-    //   ease: Power2.easeOut,
-    //   onComplete: () => {
-    //     scene.remove(mesh);
-    //   },
-    // });
     gsap.to(mesh.position, {
       duration: speed,
       x: targetX,

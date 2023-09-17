@@ -46,3 +46,4 @@ From freesound:
 
 ## Added / Fixed Features
 - Coins
+- Collectables

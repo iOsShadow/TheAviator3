@@ -3,6 +3,8 @@ import { DEFAULT_STATE, WORLD_DEFAULT_SETTINGS, canDie } from "../settings";
 import { GameStatus } from "../types";
 import { spawnEnemies } from "../world/enemy/Enemy";
 import { spawnCoins } from "../world/collectables/Coin";
+import { spawnBetterGunCollectible, spawnDoubleGunCollectible, spawnLifeCollectible, spawnSimpleGunCollectible } from "../world/collectables/Collectible";
+import { BetterGun, DoubleGun, SimpleGun } from "../world/airplane/Guns";
 
 export class GameManager {
   private soundPlaying = false;
@@ -98,32 +100,32 @@ export class GameManager {
            Math.random() < 0.01
          ) {
            this.game.state.lastLifeSpawn = this.game.state.distance;
-           spawnLifeCollectible();
+           spawnLifeCollectible(this.game);
          }
          if (
            !this.game.state.spawnedSimpleGun &&
            this.game.state.distance > this.game.world.worldSettings.simpleGunLevelDrop * this.game.world.worldSettings.distanceForLevelUpdate
          ) {
-           spawnSimpleGunCollectible();
+           spawnSimpleGunCollectible(this.game);
            this.game.state.spawnedSimpleGun = true;
          }
          if (
            !this.game.state.spawnedDoubleGun &&
-           this.game.state.distance > this.game.world.worldSettings.doubleGunLevelDrop * this.game.world.distanceForLevelUpdate
+           this.game.state.distance > this.game.world.worldSettings.doubleGunLevelDrop * this.game.world.worldSettings.distanceForLevelUpdate
          ) {
-           spawnDoubleGunCollectible();
+           spawnDoubleGunCollectible(this.game);
            this.game.state.spawnedDoubleGun = true;
          }
          if (
-           !this.game.spawnedBetterGun &&
-           this.game.distance > world.betterGunLevelDrop * world.distanceForLevelUpdate
+           !this.game.state.spawnedBetterGun &&
+           this.game.state.distance > this.game.world.worldSettings.betterGunLevelDrop * this.game.world.worldSettings.distanceForLevelUpdate
          ) {
-           spawnBetterGunCollectible();
-           this.game.spawnedBetterGun = true;
+           spawnBetterGunCollectible(this.game);
+           this.game.state.spawnedBetterGun = true;
          }
 
-         if (ui.mouseButtons[0] || ui.keysDown['Space']) {
-           airplane.shoot();
+         if (this.game.uiManager.mouseButtons[0] || this.game.uiManager.keysDown['Space']) {
+           this.game.world.airplane.shoot();
          }
 
         this.game.world.airplane.tick(deltaTime);
@@ -199,10 +201,6 @@ export class GameManager {
     this.game.world.setSideView();
 
     this.game.world.airplane.equipWeapon(null);
-
-    // airplane.equipWeapon(new SimpleGun())
-    // airplane.equipWeapon(new DoubleGun())
-    // airplane.equipWeapon(new BetterGun())
   }
 
   public addCoin() {

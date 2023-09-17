@@ -4,7 +4,6 @@ import {Game} from '../../game';
 import {rotateAroundSea, spawnParticles} from '../../utils/utils';
 import {GameStatus} from '../../types';
 import THREE, {Mesh, TetrahedronGeometry, MeshPhongMaterial, Box3} from 'three';
-import {removeLife} from '../../mechanic/Lives';
 
 //region Enemies
 class Enemy {
@@ -12,7 +11,6 @@ class Enemy {
   angle: number;
   distance: number;
   hitpoints: number;
-  allProjectiles;
 
   constructor(private game: Game) {
     var geom = new TetrahedronGeometry(8, 2);
@@ -53,16 +51,16 @@ class Enemy {
       this.game.sceneManager.remove(this);
     }
 
-    // const thisAabb = new Box3().setFromObject(this.mesh);
-    // for (const projectile of this.allProjectiles) {
-    //   const projectileAabb = new Box3().setFromObject(projectile.mesh);
-    //   if (thisAabb.intersectsBox(projectileAabb)) {
-    //     spawnParticles(projectile.mesh.position.clone(), 5, Colors.brownDark, 1);
-    //     projectile.remove();
-    //     this.hitpoints -= projectile.damage;
-    //     this.game.audioManager.play('bullet-impact', {volume: 0.3});
-    //   }
-    // }
+   const thisAabb = new Box3().setFromObject(this.mesh);
+   for (const projectile of this.game.allProjectiles) {
+     const projectileAabb = new Box3().setFromObject(projectile.mesh);
+     if (thisAabb.intersectsBox(projectileAabb)) {
+       spawnParticles(projectile.mesh.position.clone(), 5, Colors.brownDark, 1, this.game.world.scene);
+       projectile.remove();
+       this.hitpoints -= projectile.damage;
+       this.game.audioManager.play('bullet-impact', {volume: 0.3});
+     }
+   }
     if (this.hitpoints <= 0) {
       this.explode();
     }

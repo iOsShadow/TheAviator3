@@ -4,13 +4,14 @@ import { COLOR_COLLECTIBLE_BUBBLE } from "../../settings";
 import { rotateAroundSea, spawnParticles } from "../../utils/utils";
 import { SimpleGun, BetterGun, DoubleGun } from "../airplane/Guns";
 import { collide } from "../../utils/utils";
+import { gsap } from "gsap";
 
 //region Collectibles
 class Collectible {
   angle: number;
   distance: number;
-  mesh: THREE.Mesh;
-  onApply;
+  mesh: THREE.Object3D;
+  onApply: () => void;
 
   constructor(
     mesh,
@@ -107,14 +108,14 @@ class Collectible {
       itemMesh.position.z = 50;
 
       const initialScale = itemMesh.scale.clone();
-      TweenMax.to(itemMesh.scale, {
+      gsap.to(itemMesh.scale, {
         duration: DURATION / 2,
         x: initialScale.x * 4,
         y: initialScale.y * 4,
         z: initialScale.z * 4,
         ease: "Power2.easeInOut",
         onComplete: () => {
-          TweenMax.to(itemMesh.scale, {
+          gsap.to(itemMesh.scale, {
             duration: DURATION / 2,
             x: 0,
             y: 0,
@@ -130,7 +131,7 @@ class Collectible {
   }
 }
 
-function spawnSimpleGunCollectible() {
+export function spawnSimpleGunCollectible(game: Game) {
   const gun = SimpleGun.createMesh();
   gun.scale.set(0.25, 0.25, 0.25);
   gun.position.x = -2;
@@ -138,13 +139,13 @@ function spawnSimpleGunCollectible() {
   new Collectible(
     gun,
     () => {
-      this.game.world.airplane.equipWeapon(new SimpleGun());
+      game.world.airplane.equipWeapon(new SimpleGun(game));
     },
-    this.game,
+    game,
   );
 }
 
-function spawnBetterGunCollectible() {
+export function spawnBetterGunCollectible(game: Game) {
   const gun = BetterGun.createMesh();
   gun.scale.set(0.25, 0.25, 0.25);
   gun.position.x = -7;
@@ -152,13 +153,13 @@ function spawnBetterGunCollectible() {
   new Collectible(
     gun,
     () => {
-      this.game.world.airplane.equipWeapon(new BetterGun());
+      game.world.airplane.equipWeapon(new BetterGun(game));
     },
-    this.game,
+    game,
   );
 }
 
-function spawnDoubleGunCollectible() {
+export function spawnDoubleGunCollectible(game: Game) {
   const guns = new THREE.Group();
 
   const gun1 = SimpleGun.createMesh();
@@ -176,14 +177,14 @@ function spawnDoubleGunCollectible() {
   new Collectible(
     guns,
     () => {
-      this.game.world.airplane.equipWeapon(new DoubleGun());
+      game.world.airplane.equipWeapon(new DoubleGun(game));
     },
-    this.game,
+    game,
   );
 }
 
-function spawnLifeCollectible() {
-  const heart = modelManager.get("heart").clone();
+export function spawnLifeCollectible(game: Game) {
+  const heart = game.modelManager.get("heart").clone();
   heart.traverse(function (child) {
     if (child instanceof THREE.Mesh) {
       child.material.color.setHex(0xff0000);
@@ -195,8 +196,8 @@ function spawnLifeCollectible() {
   new Collectible(
     heart,
     () => {
-      this.game.gameManager.addLife();
+      game.gameManager.addLife();
     },
-    this.game,
+    game,
   );
 }

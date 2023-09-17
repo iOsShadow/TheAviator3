@@ -1,28 +1,31 @@
-import {Loader} from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { LoadingProgressManager } from './LoadingProgressManager';
 
-class ModelManager {
+export class ModelManager {
   path: any;
   models: {};
+  loadingProgressManager: LoadingProgressManager;
 
   constructor(path) {
     this.path = path;
     this.models = {};
+    this.loadingProgressManager = new LoadingProgressManager();
   }
 
-  load(modelName) {
+  load(modelName, path) {
     const promise = new Promise((resolve, reject) => {
-      const loader = new Loader();
+      const loader = new OBJLoader();
       loader.load(
-        this.path + '/' + modelName + '.obj',
+        path,
         obj => {
           this.models[modelName] = obj;
-          resolve();
+          resolve(obj);
         },
         function () {},
         reject,
       );
     });
-    loadingProgressManager.add(promise);
+    this.loadingProgressManager.add(promise);
   }
 
   get(modelName) {
@@ -32,5 +35,3 @@ class ModelManager {
     return this.models[modelName];
   }
 }
-
-const modelManager = new ModelManager('/models');
