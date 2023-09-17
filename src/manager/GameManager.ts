@@ -92,39 +92,39 @@ export class GameManager {
         }
 
         // span collectibles
-        // if (
-        //   this.game.state.lifes < world.maxLifes &&
-        //   this.game.state.distance - this.game.state.lastLifeSpawn > world.pauseLifeSpawn &&
-        //   Math.random() < 0.01
-        // ) {
-        //   this.game.state.lastLifeSpawn = this.game.state.distance;
-        //   spawnLifeCollectible();
-        // }
-        // if (
-        //   !this.game.state.spawnedSimpleGun &&
-        //   this.game.state.distance > world.simpleGunLevelDrop * world.distanceForLevelUpdate
-        // ) {
-        //   spawnSimpleGunCollectible();
-        //   this.game.state.spawnedSimpleGun = true;
-        // }
-        // if (
-        //   !this.game.state.spawnedDoubleGun &&
-        //   this.game.state.distance > world.doubleGunLevelDrop * world.distanceForLevelUpdate
-        // ) {
-        //   spawnDoubleGunCollectible();
-        //   this.game.state.spawnedDoubleGun = true;
-        // }
-        // if (
-        //   !this.game.spawnedBetterGun &&
-        //   this.game.distance > world.betterGunLevelDrop * world.distanceForLevelUpdate
-        // ) {
-        //   spawnBetterGunCollectible();
-        //   this.game.spawnedBetterGun = true;
-        // }
+         if (
+           this.game.state.lifes < this.game.world.worldSettings.maxLifes &&
+           this.game.state.distance - this.game.state.lastLifeSpawn > this.game.world.worldSettings.pauseLifeSpawn &&
+           Math.random() < 0.01
+         ) {
+           this.game.state.lastLifeSpawn = this.game.state.distance;
+           spawnLifeCollectible();
+         }
+         if (
+           !this.game.state.spawnedSimpleGun &&
+           this.game.state.distance > this.game.world.worldSettings.simpleGunLevelDrop * this.game.world.worldSettings.distanceForLevelUpdate
+         ) {
+           spawnSimpleGunCollectible();
+           this.game.state.spawnedSimpleGun = true;
+         }
+         if (
+           !this.game.state.spawnedDoubleGun &&
+           this.game.state.distance > this.game.world.worldSettings.doubleGunLevelDrop * this.game.world.distanceForLevelUpdate
+         ) {
+           spawnDoubleGunCollectible();
+           this.game.state.spawnedDoubleGun = true;
+         }
+         if (
+           !this.game.spawnedBetterGun &&
+           this.game.distance > world.betterGunLevelDrop * world.distanceForLevelUpdate
+         ) {
+           spawnBetterGunCollectible();
+           this.game.spawnedBetterGun = true;
+         }
 
-        // if (ui.mouseButtons[0] || ui.keysDown['Space']) {
-        //   airplane.shoot();
-        // }
+         if (ui.mouseButtons[0] || ui.keysDown['Space']) {
+           airplane.shoot();
+         }
 
         this.game.world.airplane.tick(deltaTime);
         this.game.state.distance +=
