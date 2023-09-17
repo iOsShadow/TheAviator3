@@ -9,8 +9,6 @@ export class SceneManager {
   }
 
   add(obj) {
-    console.log('add');
-
     this.game.world.scene.add(obj.mesh);
     this.list.add(obj);
   }
