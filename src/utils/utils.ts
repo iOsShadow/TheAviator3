@@ -98,3 +98,28 @@ export function spawnParticles(pos, count, color, scale, scene: Scene) {
     });
   }
 }
+
+export function findWhere (list, properties) {
+  for (const elem of list) {
+    let all = true;
+    for (const key in properties) {
+      if (elem[key] !== properties[key]) {
+        all = false;
+        break;
+      }
+    }
+    if (all) {
+      return elem;
+    }
+  }
+  return null;
+}
+
+export function normalize(v, vmin, vmax, tmin, tmax) {
+  var nv = Math.max(Math.min(v, vmax), vmin);
+  var dv = vmax - vmin;
+  var pc = (nv - vmin) / dv;
+  var dt = tmax - tmin;
+  var tv = tmin + pc * dt;
+  return tv;
+}

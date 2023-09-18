@@ -2,10 +2,9 @@ import * as THREE from 'three';
 import TweenMax from 'gsap';
 import {SimpleGun, DoubleGun, BetterGun} from './Guns';
 import {Colors} from '../../settings';
-import {makeTetrahedron} from '../../utils/utils';
+import {makeTetrahedron, normalize} from '../../utils/utils';
 import {Game} from '../../game';
 import {GameStatus} from '../../types';
-import {utils} from '../../utils/utils.broken';
 
 //region Airplane
 export class Cabin {
@@ -425,14 +424,14 @@ export class Airplane {
     this.propeller.rotation.x += 0.2 + deltaTime * 0.005;
 
     if (this.game.state.status === GameStatus.Playing) {
-      let targetX = utils.normalize(
+      let targetX = normalize(
         this.game.uiManager.mousePos.x,
         -1,
         1,
         -worldSettings.planeAmpWidth * 0.7,
         -worldSettings.planeAmpWidth,
       );
-      let targetY = utils.normalize(
+      let targetY = normalize(
         this.game.uiManager.mousePos.y,
         -0.75,
         0.75,
@@ -462,7 +461,7 @@ export class Airplane {
         // camera.setRotationFromEuler(new THREE.Euler(-1.490248, -1.4124514, -1.48923231))
         // camera.updateProjectionMatrix ()
       } else {
-        camera.fov = utils.normalize(this.game.uiManager.mousePos.x, -30, 1, 40, 80);
+        camera.fov = normalize(this.game.uiManager.mousePos.x, -30, 1, 40, 80);
         camera.updateProjectionMatrix();
         camera.position.y +=
           (this.mesh.position.y - camera.position.y) * deltaTime * worldSettings.cameraSensivity;
